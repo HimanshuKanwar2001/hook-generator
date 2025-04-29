@@ -5,9 +5,31 @@ import { Input } from "./ui/input";
 import { Zap, Filter, Copy, ListVideo } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 type HookPlatform = "youtube" | "tiktok" | "instagram" | "google";
-type HookTone = "formal" | "friendly" | "casual" | "professional" | "diplomatic" | "confident" | "middleschool" | "highschool" | "academic" | "simplified" | "vivid" | "empathetic" | "luxury" | "engaging" | "direct" | "persuasive";
+type HookTone =
+  | "formal"
+  | "friendly"
+  | "casual"
+  | "professional"
+  | "diplomatic"
+  | "confident"
+  | "middleschool"
+  | "highschool"
+  | "academic"
+  | "simplified"
+  | "vivid"
+  | "empathetic"
+  | "luxury"
+  | "engaging"
+  | "direct"
+  | "persuasive";
 const TONE_ICONS: Record<HookTone, string> = {
   formal: "👔",
   friendly: "🙂",
@@ -24,13 +46,13 @@ const TONE_ICONS: Record<HookTone, string> = {
   luxury: "💎",
   engaging: "👍",
   direct: "➡️",
-  persuasive: "🎯"
+  persuasive: "🎯",
 };
 const PLATFORM_ICONS: Record<HookPlatform, string> = {
   youtube: "📺",
   tiktok: "📱",
   instagram: "📸",
-  google: "🔍"
+  google: "🔍",
 };
 export function HookGenerator() {
   const [topic, setTopic] = useState("");
@@ -38,9 +60,7 @@ export function HookGenerator() {
   const [tone, setTone] = useState<HookTone>("engaging");
   const [isLoading, setIsLoading] = useState(false);
   const [hooks, setHooks] = useState<string[]>([]);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const isInIframe = () => {
     try {
       return window.self !== window.top;
@@ -53,34 +73,34 @@ export function HookGenerator() {
       toast({
         title: "Please enter a topic",
         description: "We need a topic to generate hooks for you.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
     setIsLoading(true);
     try {
-      const {
-        data,
-        error
-      } = await supabase.functions.invoke('generate-hooks', {
-        body: {
-          topic,
-          platform,
-          tone
+      const { data, error } = await supabase.functions.invoke(
+        "generate-hooks",
+        {
+          body: {
+            topic,
+            platform,
+            tone,
+          },
         }
-      });
+      );
       if (error) throw error;
       setHooks(data.hooks);
       toast({
         title: "Hooks generated!",
-        description: "Copy and use instantly to boost your content."
+        description: "Copy and use instantly to boost your content.",
       });
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       toast({
         title: "Error generating hooks",
         description: "Please try again later.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -90,7 +110,7 @@ export function HookGenerator() {
     navigator.clipboard.writeText(hook);
     toast({
       title: "Copied to clipboard!",
-      description: "The hook has been copied to your clipboard."
+      description: "The hook has been copied to your clipboard.",
     });
   };
   const copyAllHooks = () => {
@@ -99,69 +119,132 @@ export function HookGenerator() {
     navigator.clipboard.writeText(allHooks);
     toast({
       title: "All hooks copied!",
-      description: "All hooks have been copied to your clipboard."
+      description: "All hooks have been copied to your clipboard.",
     });
   };
   const inIframe = isInIframe();
-  const cardClasses = inIframe ? "w-full max-w-full p-3 space-y-3 backdrop-blur-sm bg-white/95 my-1 mx-1" : "w-full max-w-2xl p-4 space-y-4 backdrop-blur-sm bg-indigo-50 my-2 mx-2";
-  return <Card className={cardClasses}>
+  const cardClasses = inIframe
+    ? "w-full max-w-full p-3 space-y-3 backdrop-blur-sm bg-white/95 my-1 mx-1"
+    : "w-full max-w-2xl p-4 space-y-4 backdrop-blur-sm bg-indigo-50 my-2 mx-2";
+  return (
+    <Card className={cardClasses}>
       <div className="space-y-2">
-        <Input placeholder="Enter your topic or idea..." value={topic} onChange={e => setTopic(e.target.value)} className="w-full" />
+        <Input
+          placeholder="Enter your topic or idea..."
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          className="w-full"
+        />
       </div>
 
       <div className="flex flex-col md:flex-row items-center gap-2 md:justify-between py-0 mx-[5px] my-[36px]">
         <div className="flex flex-col md:flex-row w-full md:w-auto gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full md:w-auto flex items-center gap-1 text-xs md:text-sm">
+              <Button
+                variant="outline"
+                className="w-full md:w-auto flex items-center gap-1 text-xs md:text-sm"
+              >
                 <ListVideo className="h-3 w-3 md:h-4 md:w-4" />
-                {PLATFORM_ICONS[platform]} {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                {PLATFORM_ICONS[platform]}{" "}
+                {platform.charAt(0).toUpperCase() + platform.slice(1)}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuRadioGroup value={platform} onValueChange={value => setPlatform(value as HookPlatform)}>
-                {Object.entries(PLATFORM_ICONS).map(([platformKey, icon]) => <DropdownMenuRadioItem key={platformKey} value={platformKey} className="capitalize text-xs md:text-sm">
-                    {icon} {platformKey.charAt(0).toUpperCase() + platformKey.slice(1)}
-                  </DropdownMenuRadioItem>)}
+              <DropdownMenuRadioGroup
+                value={platform}
+                onValueChange={(value) => setPlatform(value as HookPlatform)}
+              >
+                {Object.entries(PLATFORM_ICONS).map(([platformKey, icon]) => (
+                  <DropdownMenuRadioItem
+                    key={platformKey}
+                    value={platformKey}
+                    className="capitalize text-xs md:text-sm"
+                  >
+                    {icon}{" "}
+                    {platformKey.charAt(0).toUpperCase() + platformKey.slice(1)}
+                  </DropdownMenuRadioItem>
+                ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full md:w-auto flex items-center gap-1 text-xs md:text-sm">
+              <Button
+                variant="outline"
+                className="w-full md:w-auto flex items-center gap-1 text-xs md:text-sm"
+              >
                 <Filter className="h-3 w-3 md:h-4 md:w-4" />
-                {TONE_ICONS[tone]} {tone.charAt(0).toUpperCase() + tone.slice(1)} Tone
+                {TONE_ICONS[tone]}{" "}
+                {tone.charAt(0).toUpperCase() + tone.slice(1)} Tone
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuRadioGroup value={tone} onValueChange={value => setTone(value as HookTone)}>
-                {Object.entries(TONE_ICONS).map(([toneKey, icon]) => <DropdownMenuRadioItem key={toneKey} value={toneKey} className="capitalize text-xs md:text-sm">
+            <DropdownMenuContent
+              className="w-44 max-h-48 overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-md"
+              sideOffset={5}
+            >
+              <DropdownMenuRadioGroup
+                value={tone}
+                onValueChange={(value) => setTone(value as HookTone)}
+              >
+                {Object.entries(TONE_ICONS).map(([toneKey, icon]) => (
+                  <DropdownMenuRadioItem
+                    key={toneKey}
+                    value={toneKey}
+                    className="capitalize text-xs md:text-sm"
+                  >
                     {icon} {toneKey.charAt(0).toUpperCase() + toneKey.slice(1)}
-                  </DropdownMenuRadioItem>)}
+                  </DropdownMenuRadioItem>
+                ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        <Button onClick={generateHooks} disabled={isLoading} className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white text-xs md:text-sm">
-          {isLoading ? "Generating..." : <>Generate Hooks <Zap className="ml-1 h-3 w-3 md:h-4 md:w-4" /></>}
+        <Button
+          onClick={generateHooks}
+          disabled={isLoading}
+          className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white text-xs md:text-sm"
+        >
+          {isLoading ? (
+            "Generating..."
+          ) : (
+            <>
+              Generate Hooks <Zap className="ml-1 h-3 w-3 md:h-4 md:w-4" />
+            </>
+          )}
         </Button>
       </div>
 
-      {hooks.length > 0 && <div className="space-y-2 animate-fade-in">
+      {hooks.length > 0 && (
+        <div className="space-y-2 animate-fade-in">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm md:text-base font-medium text-gray-900">Your viral-ready hooks 👇</h3>
-            <Button variant="outline" size="sm" onClick={copyAllHooks} className="flex items-center gap-1 text-xs">
+            <h3 className="text-sm md:text-base font-medium text-gray-900">
+              Your viral-ready hooks 👇
+            </h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyAllHooks}
+              className="flex items-center gap-1 text-xs"
+            >
               <Copy className="h-3 w-3" /> Copy All
             </Button>
           </div>
           <div className="space-y-2">
-            {hooks.map((hook, index) => <div key={index} onClick={() => copyToClipboard(hook)} className="p-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-gray-100 text-xs md:text-sm">
+            {hooks.map((hook, index) => (
+              <div
+                key={index}
+                onClick={() => copyToClipboard(hook)}
+                className="p-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-gray-100 text-xs md:text-sm"
+              >
                 {hook}
-              </div>)}
+              </div>
+            ))}
           </div>
-        </div>}
+        </div>
+      )}
 
       {/* New section for explanatory text */}
       {/* <div className="mt-6 px-4 text-left text-sm text-gray-700 space-y-4">
@@ -226,6 +309,7 @@ export function HookGenerator() {
         </div>
 
         
-      </div> */} 
-    </Card>;
+      </div> */}
+    </Card>
+  );
 }
