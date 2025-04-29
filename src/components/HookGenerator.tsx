@@ -164,7 +164,7 @@ export function HookGenerator() {
         </div>}
 
       {/* New section for explanatory text */}
-      <div className="mt-6 px-4 text-left text-sm text-gray-700 space-y-4">
+      {/* <div className="mt-6 px-4 text-left text-sm text-gray-700 space-y-4">
         <h2 className="text-base font-semibold text-gray-900">What Is a Hook?</h2>
         <p>
           A hook is the first sentence or idea that pulls your audience in. It's what makes someone stop scrolling, keep watching, or continue reading. In today's attention economy, a great hook can be the difference between going viral or getting ignored.
@@ -177,7 +177,7 @@ export function HookGenerator() {
       </div>
 
       {/* Add new sections here */}
-      <div className="mt-12 space-y-8 pb-8">
+      {/* <div className="mt-12 space-y-8 pb-8">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Example Hooks That Convert</h3>
@@ -226,6 +226,6 @@ export function HookGenerator() {
         </div>
 
         
-      </div>
+      </div> */} 
     </Card>;
 }
